@@ -62,7 +62,7 @@ jobs:
         if: ${{ github.event_name == 'push' && needs.simple_deployment_pipeline.result == 'success' && env.SKIP != 'true' }}
         uses: anothrNick/github-tag-action@1.75.0
         env: 
-          GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: false
           DEFAULT_BUMP: patch
         
