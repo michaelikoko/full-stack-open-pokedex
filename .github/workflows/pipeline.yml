@@ -52,6 +52,25 @@ jobs:
         name: Trigger deployment on Render.com
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
+      - name: Discord Notification Success
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ success() && env.SKIP != 'true' && github.event_name == 'push' }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          title: 'Build Successful and Deployed on Render :white_check_mark:'
+          description: 'Test discord notification success'
+
+      - name: Discord Notification Failure
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ failure() && env.SKIP != 'true' && github.event_name == 'push' }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          title: 'Build Failed :x: '
+          description: 'commit https://github.com/${{ github.repository }}/commit/${{ github.sha }} failed to deploy.'
+
+
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
